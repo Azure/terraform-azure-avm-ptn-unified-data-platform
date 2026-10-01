@@ -80,6 +80,7 @@ resource "azapi_resource" "nat_public_ip" {
     sku = {
       name = "Standard"
     }
+    zones = ["1", "2", "3"]
   }
   tags = local.tags
 }
@@ -321,7 +322,7 @@ Default: `"dev"`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
-Description: Azure region for the Fabric capacity, the Databricks landing zone, and the example's supporting resources.
+Description: Azure region for the Fabric capacity, the Databricks landing zone, and the example's supporting resources. The region must support availability zones, because the NAT gateway's public IP address is zone-redundant.
 
 Type: `string`
 

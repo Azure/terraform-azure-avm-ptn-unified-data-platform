@@ -49,7 +49,7 @@ variable "environment" {
 variable "location" {
   type        = string
   default     = "swedencentral"
-  description = "Azure region for the Fabric capacity, the Databricks landing zone, and the example's supporting resources."
+  description = "Azure region for the Fabric capacity, the Databricks landing zone, and the example's supporting resources. The region must support availability zones, because the NAT gateway's public IP address is zone-redundant."
   nullable    = false
 }
 

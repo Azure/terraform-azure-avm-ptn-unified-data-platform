@@ -69,6 +69,7 @@ resource "azapi_resource" "nat_public_ip" {
     sku = {
       name = "Standard"
     }
+    zones = ["1", "2", "3"]
   }
   tags = local.tags
 }
