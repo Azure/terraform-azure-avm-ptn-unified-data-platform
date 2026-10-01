@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Data Management Landing Zone",
+  "moduleDescription": "Deploys the data management landing zone resource group and a Microsoft Fabric capacity with its locks and role assignments.",
+  "canonicalType": "unified-data-platform/data-management-landing-zone",
+  "telemetryIdPrefix": "46d3xtrf.ptn.unassigned-dmlz"
+}
