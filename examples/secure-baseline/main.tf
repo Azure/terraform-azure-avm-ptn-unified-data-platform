@@ -77,7 +77,15 @@ resource "azapi_resource" "fabric_private_dns_zone" {
   name      = "privatelink.fabric.microsoft.com"
   parent_id = azapi_resource.connectivity_resource_group[0].id
   type      = "Microsoft.Network/privateDnsZones@2024-06-01"
-  tags      = local.tags
+  # Azure can still report the virtual network link as a nested resource for a short
+  # time after its deletion completes, so the zone's DELETE returns
+  # 409 CannotDeleteResource. Retrying lets destroy finish.
+  retry = {
+    error_message_regex  = ["CannotDeleteResource"]
+    interval_seconds     = 10
+    max_interval_seconds = 60
+  }
+  tags = local.tags
 }
 
 resource "azapi_resource" "fabric_private_dns_zone_link" {

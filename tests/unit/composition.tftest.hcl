@@ -26,6 +26,9 @@ run "fabric_capacity_and_onelake_composition" {
 
   variables {
     databricks_data_landing_zones = {}
+    # The AVM CI sets TF_VAR_enable_telemetry=false for unit tests, which overrides
+    # the variable default, so this run enables telemetry explicitly.
+    enable_telemetry = true
     data_management_landing_zones = {
       shared = {
         capacity_administration_members = ["fabric-admin@example.com"]
@@ -69,7 +72,7 @@ run "fabric_capacity_and_onelake_composition" {
 
   assert {
     condition     = length(modtm_telemetry.telemetry) == 1
-    error_message = "Root pattern telemetry must be enabled by default."
+    error_message = "Root pattern telemetry must be created when enable_telemetry is true."
   }
 
   assert {
