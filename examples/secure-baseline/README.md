@@ -277,7 +277,7 @@ Default: `"Allow"`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
-Description: Azure region for the Fabric capacity and the example's networking resources.
+Description: Azure region for the Fabric capacity and the example's networking resources. Fabric capacity-unit quota is granted per subscription and region, and only some regions, such as swedencentral and francecentral, have it by default. The default, swedencentral, lets the example deploy without a quota increase request.
 
 Type: `string`
 

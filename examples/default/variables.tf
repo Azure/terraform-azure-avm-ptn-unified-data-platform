@@ -14,7 +14,7 @@ variable "enable_telemetry" {
 variable "location" {
   type        = string
   default     = "swedencentral"
-  description = "Azure region for the Fabric capacity and its resource group."
+  description = "Azure region for the Fabric capacity and its resource group. Fabric capacity-unit quota is granted per subscription and region, and only some regions, such as swedencentral and francecentral, have it by default. The default, swedencentral, lets the example deploy without a quota increase request."
   nullable    = false
 }
 

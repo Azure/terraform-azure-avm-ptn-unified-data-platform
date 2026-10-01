@@ -322,7 +322,7 @@ Default: `"dev"`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
-Description: Azure region for the Fabric capacity, the Databricks landing zone, and the example's supporting resources. The region must support availability zones, because the NAT gateway's public IP address is zone-redundant.
+Description: Azure region for the Fabric capacity, the Databricks landing zone, and the example's supporting resources. Fabric capacity-unit quota is granted per subscription and region, and only some regions, such as swedencentral and francecentral, have it by default. The default, swedencentral, lets the example deploy without a quota increase request. The region must also support availability zones, because the NAT gateway's public IP address is zone-redundant.
 
 Type: `string`
 
