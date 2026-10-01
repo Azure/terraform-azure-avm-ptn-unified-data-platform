@@ -330,7 +330,7 @@ variable "databricks_data_landing_zones" {
         setting.event_hub_authorization_rule_resource_id == null || can(provider::azapi::parse_resource_id("Microsoft.EventHub/namespaces/authorizationRules", setting.event_hub_authorization_rule_resource_id))
       ]
     ]))
-    error_message = "Each Databricks diagnostic eventhub_authorization_rule_id must be a valid Event Hubs namespace authorization-rule resource ID."
+    error_message = "Each Databricks diagnostic event_hub_authorization_rule_resource_id must be a valid Event Hubs namespace authorization-rule resource ID."
   }
   validation {
     condition = alltrue(flatten([
