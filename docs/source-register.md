@@ -8,7 +8,7 @@ The sources directly affected by the review fixes below were rechecked on 2026-0
 | CAF Azure Architecture for a Unified Data Platform | 2026-03-10 | DMLZ, application LZ integration, optional Azure DLZ model |
 | Azure Verified Modules Terraform pattern index and ALZ repositories | Catalog reviewed 2026-07-23 | Pattern composition and ALZ compatibility |
 | Microsoft Fabric Terraform provider | v1.14.0, reviewed 2026-09-30 | Implemented Fabric resources and preview workspace CMK |
-| Fabric tenant setting Terraform resource and REST API | v1.12.0 / preview, reviewed 2026-07-23 | Declarative tenant settings, security-group scope, delegation, typed properties, deletion behavior, and permissions |
+| Fabric tenant setting Terraform resource and REST API | v1.14.0, generally available since provider v1.8.0, reviewed 2026-10-01 | Declarative tenant settings, security-group scope, delegation, typed properties, deletion behavior, and permissions; kept out of module scope as a tenant-wide prerequisite |
 | Fabric capacity ARM schema | `Microsoft.Fabric/capacities@2023-11-01`, reviewed 2026-07-23 | Stable AzAPI capacity contract and administrator identity semantics |
 | Databricks Access Connector ARM schema | `Microsoft.Databricks/accessConnectors@2024-05-01`, reviewed 2026-07-23 | Stable AzAPI Access Connector contract and system-assigned identity output |
 | AVM resource group, Access Connector, capacity, and utility interfaces | v0.4.0 / v0.1.0 / v0.1.0 / v0.7.0, reviewed 2026-09-30 | Retained published AzAPI-based dependencies; workspace and private endpoints are owned directly to remove AzureRM requirements |

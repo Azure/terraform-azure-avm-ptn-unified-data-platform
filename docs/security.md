@@ -77,7 +77,7 @@ OneLake endpoint selection is parameterized because global, regional, and worksp
 - Fabric workspace CMK protects supported workspace content, including OneLake data, and is now automated through the preview `fabric_workspace_encryption` resource; the tenant-wide CMK setting, the Fabric Platform CMK service principal, and its Key Vault permissions must still be configured before enabling `customer_managed_key`. Use versionless RSA/RSA-HSM key identifiers, enable soft delete and purge protection, and verify every item in the workspace is supported before enablement.
 - OneLake federation requires supported Databricks Runtime/SQL Warehouse versions and Fabric tenant/workspace settings. These control-plane prerequisites cannot be proved by an Azure plan.
 - The first Databricks module does not create front-end, browser-authentication, back-end, or serverless Private Link resources; public UI/API access must not be disabled until those dependencies are deployed and tested externally.
-- Fabric tenant settings use a preview, tenant-wide API and are configured outside this module, once per Fabric tenant, before any DMLZ or Fabric DLZ deploys. See [Prerequisites](../README.md#prerequisites) for the required settings.
+- Fabric tenant settings are tenant-wide and require a Fabric administrator. They are configured outside this module, once per Fabric tenant, before any DMLZ or Fabric DLZ deploys. See [Prerequisites](../README.md#prerequisites) for the required settings.
 
 ## State and Pipeline Security
 

@@ -67,7 +67,7 @@ The remaining telemetry specification/tooling rollout gap is documented under [C
    - Users can access data stored in OneLake with apps external to Fabric, required for Azure Databricks to reach OneLake through the Access Connector's managed identity.
    - Use short-lived user-delegated SAS tokens and Authenticate with OneLake user-delegated SAS tokens, required only for direct ABFS read/write instead of read-only OneLake catalog federation.
 8. A nontrial Fabric F SKU in a supported region.
-9. Least-privilege deployment identities. Use OIDC or managed identity in automation. The Fabric provider does not read `ARM_*` variables; the examples' `pre.ps1` hooks map an OIDC or managed-identity `ARM_*` identity onto the Fabric provider (see [docs/e2e-testing.md](docs/e2e-testing.md)).
+9. Least-privilege deployment identities. Use OIDC or managed identity in automation. The Fabric provider reads the same `ARM_*` identity variables as AzAPI, so one identity configuration serves both providers (see [docs/e2e-testing.md](docs/e2e-testing.md)).
 10. For Databricks: a caller-managed VNet with two dedicated delegated subnets and NSGs, explicit outbound connectivity, a Premium workspace SKU, and existing Fabric Lakehouse or Warehouse GUIDs.
 11. For Databricks customer-managed keys: versioned Azure Key Vault key URLs (`https://<vault>.vault.azure.net/keys/<name>/<version>`) for the managed-disk and managed-services keys, which the Databricks workspace encryption API requires; the root DBFS key accepts a versioned or versionless URL. Grant **Key Vault Crypto Service Encryption User**, or get/wrapKey/unwrapKey, to the identity each surface uses:
     - **Root DBFS:** the workspace storage account identity, which Databricks creates only when the workspace is prepared for encryption; the key must be usable before it is bound. Set `customer_managed_key.dbfs_root_key_role_assignment.key_vault_resource_id` to let the zone grant this on the key between those steps in one apply (Azure RBAC vaults; the deploying identity needs `Microsoft.Authorization/roleAssignments/write` on the key). Otherwise the first apply prepares the workspace but cannot bind the key; grant access and apply again. [docs/security.md](docs/security.md) covers existing grants, key or vault changes, and removing the grant.
@@ -179,7 +179,6 @@ map(object({
     capacity_administration_members = set(string)
     capacity_name                   = string
     capacity_role_assignments = optional(map(object({
-      name                                   = optional(string, null)
       role_definition_id_or_name             = string
       principal_id                           = string
       description                            = optional(string, null)
@@ -401,7 +400,7 @@ Default: `true`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
-Description: Common Azure tags merged into every data management landing zone.
+Description: Common Azure tags merged into every data management, Fabric, and Databricks landing zone.
 
 Type: `map(string)`
 

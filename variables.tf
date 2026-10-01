@@ -339,7 +339,7 @@ variable "databricks_data_landing_zones" {
         setting.workspace_resource_id == null || can(provider::azapi::parse_resource_id("Microsoft.OperationalInsights/workspaces", setting.workspace_resource_id))
       ]
     ]))
-    error_message = "Each Databricks diagnostic log_analytics_workspace_id must be a valid Log Analytics workspace resource ID."
+    error_message = "Each Databricks diagnostic workspace_resource_id must be a valid Log Analytics workspace resource ID."
   }
   validation {
     condition = alltrue(flatten([
@@ -348,7 +348,7 @@ variable "databricks_data_landing_zones" {
         setting.storage_account_resource_id == null || can(provider::azapi::parse_resource_id("Microsoft.Storage/storageAccounts", setting.storage_account_resource_id))
       ]
     ]))
-    error_message = "Each Databricks diagnostic storage_account_id must be a valid storage-account resource ID."
+    error_message = "Each Databricks diagnostic storage_account_resource_id must be a valid storage-account resource ID."
   }
 }
 

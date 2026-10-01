@@ -23,17 +23,11 @@ Each example's `tests/unit/defaults.tftest.hcl` plans the example with mocked pr
 
 ## Fabric provider authentication
 
-The Microsoft Fabric provider does not read `ARM_*` variables. Each example's `pre.ps1` hook runs before Terraform (in `avm test e2e` and in the `avm pr-check` policy step) and writes a `.env` file that maps the runner's identity onto the Fabric provider:
-
-- `ARM_USE_OIDC=true` (the AVM CI default) becomes `FABRIC_USE_OIDC=true`, `FABRIC_CLIENT_ID`, and `FABRIC_TENANT_ID`. The Fabric provider then requests the GitHub Actions OIDC token itself.
-- `ARM_USE_MSI=true` becomes `FABRIC_USE_MSI=true` with the same IDs.
-- With no service-principal identity (a local `az login`), nothing is mapped and the Fabric provider uses its default Azure CLI authentication.
-
-No secret is ever written. `FABRIC_*` variables that are already set are left untouched, and `post.ps1` removes the generated `.env` on every path. `.env` files are gitignored.
+The Microsoft Fabric provider reads the same `ARM_*` identity variables as AzAPI, including `ARM_CLIENT_ID`, `ARM_TENANT_ID`, and `ARM_USE_OIDC`, and requests the GitHub Actions OIDC token itself. The identity that the AVM workflow configures for AzAPI therefore also authenticates the Fabric provider, without hooks or extra variables. With a local `az login`, both providers use the Azure CLI sign-in.
 
 ## Tenant prerequisites for the test identity
 
-Azure access alone is not sufficient: the Fabric tenant of the test identity must satisfy the Fabric items in the [README prerequisites](../README.md#prerequisites). In particular, the identity must be a Fabric administrator (required to create Fabric domains), and the tenant settings for service-principal API access, workspace-level inbound network rules, and external OneLake access must be enabled. These are tenant-level decisions that no Terraform module can configure.
+Azure access alone is not sufficient: the Fabric tenant of the test identity must satisfy the Fabric items in the [README prerequisites](../README.md#prerequisites). In particular, the identity must be a Fabric administrator (required to create Fabric domains), and the tenant settings for service-principal API access, workspace-level inbound network rules, and external OneLake access must be enabled. This module treats these tenant-level settings as prerequisites and does not change them.
 
 ## Running end-to-end tests locally
 
@@ -45,7 +39,7 @@ Import-Module Avm.Authoring
 avm test e2e --example default
 ```
 
-The command runs the example's `pre.ps1`, then `terraform init -upgrade`, `apply` (retrying transient capacity errors after a destroy), the idempotency `plan -detailed-exitcode`, `destroy`, and finally `post.ps1`. `destroy` runs whenever initialization succeeded, including after a failed apply, so a failure does not leave resources behind.
+The command runs `terraform init -upgrade`, `apply` (retrying transient capacity errors after a destroy), the idempotency `plan -detailed-exitcode`, and `destroy`. `destroy` runs whenever initialization succeeded, including after a failed apply. If `destroy` itself fails, the remaining resources must be removed manually.
 
 ## Root DBFS customer-managed key integration test
 
