@@ -366,5 +366,5 @@ DESCRIPTION
 variable "tags" {
   type        = map(string)
   default     = null
-  description = "Common Azure tags merged into every data management landing zone."
+  description = "Common Azure tags merged into every data management, Fabric, and Databricks landing zone."
 }
