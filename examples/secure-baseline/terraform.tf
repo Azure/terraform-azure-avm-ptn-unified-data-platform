@@ -10,17 +10,18 @@ terraform {
       source  = "microsoft/fabric"
       version = ">= 1.14, < 2.0"
     }
-    modtm = {
-      source  = "Azure/modtm"
-      version = "~> 0.3"
-    }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.5"
-    }
-    time = {
-      source  = "hashicorp/time"
-      version = "~> 0.9"
+      version = "~> 3.6"
     }
   }
+}
+
+provider "azapi" {
+  subscription_id = var.subscription_id
+}
+
+provider "fabric" {
+  preview   = var.enable_preview_features
+  tenant_id = data.azapi_client_config.current.tenant_id
 }
