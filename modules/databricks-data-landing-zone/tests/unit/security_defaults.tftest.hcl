@@ -5,6 +5,13 @@ mock_provider "azapi" {
       tenant_id       = "00000000-0000-0000-0000-000000000002"
     }
   }
+  mock_data "azapi_resource_list" {
+    defaults = {
+      output = {
+        log_categories = ["ssh", "notebook", "jobs", "genie", "dbfs", "clusters", "accounts"]
+      }
+    }
+  }
 }
 mock_provider "modtm" {}
 mock_provider "random" {}
@@ -371,9 +378,107 @@ run "diagnostic_settings_preserve_marketplace_destination" {
       azapi_resource.diagnostic_settings["partner"].body.properties.marketplacePartnerId != null &&
       azapi_resource.diagnostic_settings["partner"].body.properties.logAnalyticsDestinationType == null &&
       azapi_resource.diagnostic_settings["partner"].body.properties.logs[0].categoryGroup == "allLogs" &&
+      length(azapi_resource.diagnostic_settings["partner"].body.properties.logs) == 1 &&
+      length(data.azapi_resource_list.diagnostic_categories) == 0 &&
       azapi_resource.diagnostic_settings["partner"].name == "diag-dbw-test-${sha256("partner")}"
     )
     error_message = "Marketplace/log groups must survive and AzureDiagnostics must become ARM null at the boundary."
+  }
+}
+
+run "diagnostic_settings_include_response_added_disabled_categories" {
+  command = apply
+  variables {
+    diagnostic_settings = {
+      audit = {
+        logs                  = [{ category = "accounts" }, { category = "clusters" }, { category = "dbfs" }, { category = "jobs" }]
+        workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/rg-monitor/providers/Microsoft.OperationalInsights/workspaces/law-test"
+      }
+    }
+  }
+  assert {
+    condition = (
+      length(azapi_resource.diagnostic_settings["audit"].body.properties.logs) == 7 &&
+      toset([for log in azapi_resource.diagnostic_settings["audit"].body.properties.logs : log.category if log.enabled]) == toset(["accounts", "clusters", "dbfs", "jobs"]) &&
+      toset([for log in azapi_resource.diagnostic_settings["audit"].body.properties.logs : log.category if !log.enabled]) == toset(["genie", "notebook", "ssh"]) &&
+      alltrue([for log in azapi_resource.diagnostic_settings["audit"].body.properties.logs : log.retentionPolicy.days == 0 && !log.retentionPolicy.enabled])
+    )
+    error_message = "Azure's response-added categories must already be present and disabled without changing the four requested log categories."
+  }
+  assert {
+    condition = (
+      azapi_resource.diagnostic_settings["audit"].list_unique_id_property["properties.logs"] == "category, categoryGroup" &&
+      azapi_resource.diagnostic_settings["audit"].list_unique_id_property["properties.metrics"] == "category" &&
+      length(coalesce(azapi_resource.diagnostic_settings["audit"].ignore_other_items_in_list, [])) == 0 &&
+      length(azapi_resource.diagnostic_settings["audit"].body.properties.metrics) == 0
+    )
+    error_message = "Compare complete lists by category identity without ignoring extra items, and send empty metrics as an empty list."
+  }
+}
+
+run "diagnostic_settings_track_log_changes_and_removed_categories" {
+  command = apply
+  variables {
+    diagnostic_settings = {
+      audit = {
+        logs                  = [{ category = "accounts", enabled = false }, { category = "dbfs" }, { category = "jobs" }, { category = "notebook" }]
+        workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/rg-monitor/providers/Microsoft.OperationalInsights/workspaces/law-test"
+      }
+    }
+  }
+  assert {
+    condition = (
+      toset([for log in azapi_resource.diagnostic_settings["audit"].body.properties.logs : log.category if log.enabled]) == toset(["dbfs", "jobs", "notebook"]) &&
+      length([for log in azapi_resource.diagnostic_settings["audit"].body.properties.logs : log if log.category == "clusters" && !log.enabled]) == 1 &&
+      length([for log in azapi_resource.diagnostic_settings["audit"].body.properties.logs : log if log.category == "accounts" && !log.enabled]) == 1
+    )
+    error_message = "Adding, disabling or removing a configured category must change its enabled flag in the complete ARM list."
+  }
+}
+
+run "diagnostic_settings_normalize_omitted_null_and_empty_metrics" {
+  command = apply
+  variables {
+    diagnostic_settings = {
+      omitted = {
+        logs                  = [{ category = "accounts" }]
+        workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/rg-monitor/providers/Microsoft.OperationalInsights/workspaces/law-test"
+      }
+      explicit_null = {
+        logs                  = [{ category = "accounts" }]
+        metrics               = null
+        workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/rg-monitor/providers/Microsoft.OperationalInsights/workspaces/law-test"
+      }
+      empty = {
+        logs                  = [{ category = "accounts" }]
+        metrics               = []
+        workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/rg-monitor/providers/Microsoft.OperationalInsights/workspaces/law-test"
+      }
+    }
+  }
+  assert {
+    condition     = alltrue([for setting in azapi_resource.diagnostic_settings : length(setting.body.properties.metrics) == 0])
+    error_message = "Omitted, null and empty metric selections must all produce an empty ARM list rather than null."
+  }
+}
+
+run "metric_only_diagnostics_disable_individual_logs" {
+  command = apply
+  variables {
+    diagnostic_settings = {
+      metrics = {
+        metrics               = [{ category = "AllMetrics", enabled = true }]
+        workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/rg-monitor/providers/Microsoft.OperationalInsights/workspaces/law-test"
+      }
+    }
+  }
+  assert {
+    condition = (
+      length(azapi_resource.diagnostic_settings["metrics"].body.properties.logs) == 7 &&
+      alltrue([for log in azapi_resource.diagnostic_settings["metrics"].body.properties.logs : !log.enabled]) &&
+      azapi_resource.diagnostic_settings["metrics"].body.properties.metrics[0].enabled
+    )
+    error_message = "A metrics-only setting must disable all individual log categories while preserving the requested metric."
   }
 }
 

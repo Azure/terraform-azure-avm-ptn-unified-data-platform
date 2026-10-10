@@ -207,6 +207,24 @@ module "diagnostic_settings_interface" {
   enable_telemetry       = var.enable_telemetry
 }
 
+data "azapi_resource_list" "diagnostic_categories" {
+  count = anytrue([for setting in var.diagnostic_settings : alltrue([for log in setting.logs : log.category_group == null])]) ? 1 : 0
+
+  parent_id = azapi_resource.this.id
+  type      = "Microsoft.Insights/diagnosticSettingsCategories@2021-05-01-preview"
+  response_export_values = {
+    log_categories = "value[?properties.categoryType == 'Logs'].name"
+  }
+  retry = var.retry
+
+  dynamic "timeouts" {
+    for_each = var.timeouts == null ? [] : [var.timeouts]
+    content {
+      read = timeouts.value.read
+    }
+  }
+}
+
 resource "azapi_resource" "diagnostic_settings" {
   for_each = module.diagnostic_settings_interface.diagnostic_settings_azapi_v2
 
@@ -216,9 +234,15 @@ resource "azapi_resource" "diagnostic_settings" {
   body = merge(each.value.body, {
     properties = merge(each.value.body.properties, {
       logAnalyticsDestinationType = var.diagnostic_settings[each.key].log_analytics_destination_type == "AzureDiagnostics" ? null : "Dedicated"
+      logs                        = local.diagnostic_setting_logs[each.key]
+      metrics                     = coalesce(each.value.body.properties.metrics, [])
     })
   })
-  ignore_body_changes    = length(var.ignore_body_changes.insights_diagnostic_settings) > 0 ? var.ignore_body_changes.insights_diagnostic_settings : null
+  ignore_body_changes = length(var.ignore_body_changes.insights_diagnostic_settings) > 0 ? var.ignore_body_changes.insights_diagnostic_settings : null
+  list_unique_id_property = {
+    "properties.logs"    = "category, categoryGroup"
+    "properties.metrics" = "category"
+  }
   response_export_values = []
   retry                  = var.retry
 

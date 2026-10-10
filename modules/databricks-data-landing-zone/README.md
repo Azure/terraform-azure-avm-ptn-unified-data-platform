@@ -26,6 +26,7 @@ The following resources are used by this module:
 - [azapi_update_resource.dbfs_root_key](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) (resource)
 - [modtm_telemetry.this](https://registry.terraform.io/providers/Azure/modtm/latest/docs/resources/telemetry) (resource)
 - [terraform_data.dbfs_root_key_grant_revision](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) (resource)
+- [azapi_resource_list.diagnostic_categories](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/resource_list) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs

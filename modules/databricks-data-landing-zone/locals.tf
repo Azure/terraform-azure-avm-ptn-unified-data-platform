@@ -8,6 +8,24 @@ locals {
     for key, setting in var.diagnostic_settings :
     key => setting.name != null ? setting.name : "diag-${substr(var.workspace_name, 0, 64)}-${sha256(key)}"
   }
+  # Azure returns every individual category, including disabled ones.
+  diagnostic_setting_logs = {
+    for key, setting in module.diagnostic_settings_interface.diagnostic_settings_azapi_v2 :
+    key => anytrue([for log in var.diagnostic_settings[key].logs : log.category_group != null]) ? setting.body.properties.logs : concat(
+      coalesce(setting.body.properties.logs, []),
+      [
+        for category in sort(data.azapi_resource_list.diagnostic_categories[0].output.log_categories) : {
+          category      = category
+          categoryGroup = null
+          enabled       = false
+          retentionPolicy = {
+            days    = 0
+            enabled = false
+          }
+        } if !contains([for log in var.diagnostic_settings[key].logs : log.category], category)
+      ]
+    )
+  }
   managed_resource_group_id  = "/subscriptions/${provider::azapi::parse_resource_id("Microsoft.Resources/resourceGroups", local.resource_group_resource_id).subscription_id}/resourceGroups/${var.managed_resource_group_name}"
   managed_disk_key_parts     = try(regex("(?i)^(https://[^/]+/)keys/([^/]+)/([^/]+)$", var.databricks_customer_managed_keys.managed_disk_key_vault_key_id), null)
   managed_services_key_parts = try(regex("(?i)^(https://[^/]+/)keys/([^/]+)/([^/]+)$", var.databricks_customer_managed_keys.managed_services_key_vault_key_id), null)

@@ -13,6 +13,13 @@ mock_provider "azapi" {
       tenant_id                = "6c8f1a2b-3d4e-4f50-8a9b-0c1d2e3f4a5b"
     }
   }
+  mock_data "azapi_resource_list" {
+    defaults = {
+      output = {
+        log_categories = ["accounts", "clusters", "dbfs", "jobs", "notebook", "ssh"]
+      }
+    }
+  }
 }
 mock_provider "fabric" {}
 mock_provider "random" {}
