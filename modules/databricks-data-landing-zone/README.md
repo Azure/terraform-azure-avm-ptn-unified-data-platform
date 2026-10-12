@@ -424,7 +424,7 @@ The following Modules are called:
 
 Source: Azure/avm-res-databricks-accessconnector/azurerm
 
-Version: 0.1.0
+Version: 0.2.0
 
 ### <a name="module_diagnostic_settings_interface"></a> [diagnostic\_settings\_interface](#module\_diagnostic\_settings\_interface)
 
