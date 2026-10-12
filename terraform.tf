@@ -1,10 +1,14 @@
 terraform {
-  required_version = ">= 1.9, < 2.0"
+  required_version = ">= 1.12, < 2.0"
 
   required_providers {
     azapi = {
-      source  = "Azure/azapi"
-      version = "~> 2.12"
+      source  = "azure/azapi"
+      version = ">= 2.12, < 3.0"
+    }
+    fabric = {
+      source  = "microsoft/fabric"
+      version = ">= 1.14, < 2.0"
     }
     modtm = {
       source  = "Azure/modtm"
@@ -13,6 +17,10 @@ terraform {
     random = {
       source  = "hashicorp/random"
       version = "~> 3.5"
+    }
+    time = {
+      source  = "hashicorp/time"
+      version = "~> 0.9"
     }
   }
 }
