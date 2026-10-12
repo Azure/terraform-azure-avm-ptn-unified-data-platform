@@ -13,7 +13,7 @@ module "resource_group" {
 
 module "access_connector" {
   source  = "Azure/avm-res-databricks-accessconnector/azurerm"
-  version = "0.1.0"
+  version = "0.2.0"
 
   location            = var.location
   name                = var.access_connector_name
