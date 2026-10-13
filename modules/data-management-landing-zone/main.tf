@@ -11,7 +11,7 @@ module "resource_group" {
 
 module "capacity" {
   source  = "Azure/avm-res-fabric-capacity/azure"
-  version = "0.1.0"
+  version = "0.2.0"
 
   administration_members = var.capacity_administration_members
   location               = var.location

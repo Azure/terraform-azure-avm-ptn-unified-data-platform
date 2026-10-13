@@ -145,7 +145,7 @@ The following Modules are called:
 
 Source: Azure/avm-res-fabric-capacity/azure
 
-Version: 0.1.0
+Version: 0.2.0
 
 ### <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group)
 
