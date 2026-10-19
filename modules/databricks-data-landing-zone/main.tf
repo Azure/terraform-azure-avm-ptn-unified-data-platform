@@ -13,7 +13,7 @@ module "resource_group" {
 
 module "access_connector" {
   source  = "Azure/avm-res-databricks-accessconnector/azurerm"
-  version = "0.2.0"
+  version = "0.2.1"
 
   location            = var.location
   name                = var.access_connector_name
@@ -201,7 +201,7 @@ resource "azapi_resource" "lock" {
 # have been applied, so ARM receives null without a second conversion to Dedicated.
 module "diagnostic_settings_interface" {
   source  = "Azure/avm-utl-interfaces/azure"
-  version = "0.7.0"
+  version = "0.9.0"
 
   diagnostic_settings_v2 = var.diagnostic_settings
   enable_telemetry       = var.enable_telemetry
