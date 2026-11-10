@@ -3,5 +3,5 @@
   "moduleDisplayName": "Databricks Data Landing Zone",
   "moduleDescription": "Deploys a VNet-injected Azure Databricks workspace, diagnostics, and a managed-identity Access Connector for OneLake federation.",
   "canonicalType": "unified-data-platform/databricks-data-landing-zone",
-  "telemetryIdPrefix": "46d3xtrf.ptn.unassigned-databricks-dlz"
+  "telemetryIdPrefix": "46d3xtrf.ptn.715c582"
 }
