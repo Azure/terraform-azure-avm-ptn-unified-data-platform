@@ -3,5 +3,5 @@
   "moduleDisplayName": "Fabric Data Landing Zone",
   "moduleDescription": "Deploys a Microsoft Fabric domain and workspaces with identities, role assignments, network policies, workspace-level private link, and optional customer-managed-key encryption.",
   "canonicalType": "unified-data-platform/fabric-data-landing-zone",
-  "telemetryIdPrefix": "46d3xtrf.ptn.unassigned-fabric-dlz"
+  "telemetryIdPrefix": "46d3xtrf.ptn.8288519"
 }

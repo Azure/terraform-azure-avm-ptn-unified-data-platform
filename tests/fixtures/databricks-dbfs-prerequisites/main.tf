@@ -15,12 +15,6 @@ terraform {
   }
 }
 
-variable "location" {
-  type        = string
-  description = "Azure region for the test resources."
-  nullable    = false
-}
-
 data "azapi_client_config" "current" {}
 
 resource "random_string" "suffix" {

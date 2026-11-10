@@ -3,7 +3,13 @@
 # module intentionally does not declare providers it never uses directly (TFNFR26).
 # Without the mapping, providers needed only by composed dependencies can fall back
 # to real providers instead of mocks.
-mock_provider "azapi" {}
+mock_provider "azapi" {
+  mock_data "azapi_client_config" {
+    defaults = {
+      subscription_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000"
+    }
+  }
+}
 mock_provider "fabric" {}
 mock_provider "modtm" {}
 mock_provider "random" {}
@@ -34,7 +40,6 @@ run "fabric_capacity_and_onelake_composition" {
         capacity_administration_members = ["fabric-admin@example.com"]
         capacity_name                   = "fctest"
         capacity_sku_name               = "F2"
-        enable_telemetry                = false
         location                        = "westeurope"
         resource_group_name             = "rg-fabric-test"
       }
@@ -71,7 +76,7 @@ run "fabric_capacity_and_onelake_composition" {
   }
 
   assert {
-    condition     = length(modtm_telemetry.telemetry) == 1
+    condition     = length(azapi_resource.telemetry) == 1
     error_message = "Root pattern telemetry must be created when enable_telemetry is true."
   }
 
@@ -121,8 +126,8 @@ run "global_telemetry_opt_out_with_child_defaults" {
   }
 
   assert {
-    condition     = length(modtm_telemetry.telemetry) == 0
-    error_message = "Global telemetry opt-out must disable root telemetry while child telemetry flags retain their true defaults."
+    condition     = length(azapi_resource.telemetry) == 0
+    error_message = "Global telemetry opt-out must disable root telemetry."
   }
 }
 
@@ -145,7 +150,6 @@ run "rejects_missing_capacity_key" {
         capacity_administration_members = ["fabric-admin@example.com"]
         capacity_name                   = "fctest"
         capacity_sku_name               = "F2"
-        enable_telemetry                = false
         location                        = "westeurope"
         resource_group_name             = "rg-fabric-test"
       }
@@ -169,7 +173,7 @@ run "rejects_missing_capacity_key" {
   expect_failures = [var.fabric_data_landing_zones]
 
   assert {
-    condition     = length(modtm_telemetry.telemetry) == 0
+    condition     = length(azapi_resource.telemetry) == 0
     error_message = "Root pattern telemetry must support explicit opt-out."
   }
 }

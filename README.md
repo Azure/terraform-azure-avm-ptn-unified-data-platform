@@ -156,12 +156,11 @@ The following requirements are needed by this module:
 
 The following resources are used by this module:
 
-- [modtm_telemetry.telemetry](https://registry.terraform.io/providers/Azure/modtm/latest/docs/resources/telemetry) (resource)
-- [random_uuid.telemetry](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
+- [azapi_resource.telemetry](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
+- [terraform_data.telemetry](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) (resource)
 - [time_sleep.wait_for_capacity_activation](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) (resource)
 - [azapi_client_config.telemetry](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/client_config) (data source)
 - [fabric_capacity.this](https://registry.terraform.io/providers/microsoft/fabric/latest/docs/data-sources/capacity) (data source)
-- [modtm_module_source.telemetry](https://registry.terraform.io/providers/Azure/modtm/latest/docs/data-sources/module_source) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -189,7 +188,6 @@ map(object({
       principal_type                         = optional(string, null)
     })), {})
     capacity_sku_name = string
-    enable_telemetry  = optional(bool, true)
     location          = string
     lock = optional(object({
       kind = string
@@ -329,7 +327,6 @@ map(object({
       managed_services_key_vault_resource_id          = optional(string)
     }))
     default_storage_firewall_enabled  = optional(bool, true)
-    enable_telemetry                  = optional(bool, true)
     infrastructure_encryption_enabled = optional(bool, true)
     location                          = string
     lock = optional(object({

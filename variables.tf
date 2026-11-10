@@ -13,7 +13,6 @@ variable "data_management_landing_zones" {
       principal_type                         = optional(string, null)
     })), {})
     capacity_sku_name = string
-    enable_telemetry  = optional(bool, true)
     location          = string
     lock = optional(object({
       kind = string
@@ -204,7 +203,6 @@ variable "databricks_data_landing_zones" {
       managed_services_key_vault_resource_id          = optional(string)
     }))
     default_storage_firewall_enabled  = optional(bool, true)
-    enable_telemetry                  = optional(bool, true)
     infrastructure_encryption_enabled = optional(bool, true)
     location                          = string
     lock = optional(object({

@@ -201,8 +201,9 @@ resource "azapi_resource" "lock" {
 # have been applied, so ARM receives null without a second conversion to Dedicated.
 module "diagnostic_settings_interface" {
   source  = "Azure/avm-utl-interfaces/azure"
-  version = "0.7.0"
+  version = "0.9.0"
 
+  location               = var.location
   diagnostic_settings_v2 = var.diagnostic_settings
   enable_telemetry       = var.enable_telemetry
 }

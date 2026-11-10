@@ -4,7 +4,13 @@
 # Without the mapping, providers needed only by composed dependencies (for example
 # random, used internally by pinned AVM resource modules) fall back to the real provider
 # instead of the mock.
-mock_provider "azapi" {}
+mock_provider "azapi" {
+  mock_data "azapi_client_config" {
+    defaults = {
+      subscription_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000"
+    }
+  }
+}
 mock_provider "modtm" {}
 mock_provider "random" {}
 

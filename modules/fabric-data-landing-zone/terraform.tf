@@ -10,9 +10,5 @@ terraform {
       source  = "microsoft/fabric"
       version = ">= 1.14, < 2.0"
     }
-    modtm = {
-      source  = "Azure/modtm"
-      version = "~> 0.3"
-    }
   }
 }

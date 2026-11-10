@@ -15,12 +15,11 @@ The following requirements are needed by this module:
 
 - <a name="requirement_fabric"></a> [fabric](#requirement\_fabric) (>= 1.14, < 2.0)
 
-- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
-
 ## Resources
 
 The following resources are used by this module:
 
+- [azapi_resource.telemetry](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
 - [azapi_resource.workspace_private_dns_zone_group](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
 - [azapi_resource.workspace_private_endpoint](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
 - [azapi_resource.workspace_private_link_service](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
@@ -35,7 +34,8 @@ The following resources are used by this module:
 - [fabric_workspace_outbound_cloud_connection_rules.this](https://registry.terraform.io/providers/microsoft/fabric/latest/docs/resources/workspace_outbound_cloud_connection_rules) (resource)
 - [fabric_workspace_outbound_gateway_rules.this](https://registry.terraform.io/providers/microsoft/fabric/latest/docs/resources/workspace_outbound_gateway_rules) (resource)
 - [fabric_workspace_role_assignment.this](https://registry.terraform.io/providers/microsoft/fabric/latest/docs/resources/workspace_role_assignment) (resource)
-- [modtm_telemetry.this](https://registry.terraform.io/providers/Azure/modtm/latest/docs/resources/telemetry) (resource)
+- [terraform_data.telemetry](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) (resource)
+- [azapi_client_config.telemetry](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/client_config) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -165,7 +165,9 @@ Default: `false`
 
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
-Description: Controls whether anonymous module usage telemetry is enabled for this module and its child modules.
+Description: This variable controls whether or not telemetry is enabled for the module.  
+For more information see <https://aka.ms/avm/telemetryinfo>.  
+If it is set to false, then no telemetry will be collected.
 
 Type: `bool`
 
