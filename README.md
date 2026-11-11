@@ -169,7 +169,7 @@ The following input variables are required:
 
 ### <a name="input_data_management_landing_zones"></a> [data\_management\_landing\_zones](#input\_data\_management\_landing\_zones)
 
-Description: Azure data management landing zones and Fabric capacities. Capacity administrators must be Entra user UPNs or service-principal object IDs.
+Description: Azure data management landing zones and Fabric capacities. Each zone's telemetry is enabled by default and can be disabled individually; the module-level enable\_telemetry opt-out disables telemetry for every zone. Capacity administrators must be Entra user UPNs or service-principal object IDs.
 
 Type:
 
@@ -188,6 +188,7 @@ map(object({
       principal_type                         = optional(string, null)
     })), {})
     capacity_sku_name = string
+    enable_telemetry  = optional(bool, true)
     location          = string
     lock = optional(object({
       kind = string
@@ -293,7 +294,7 @@ Default: `"30s"`
 
 ### <a name="input_databricks_data_landing_zones"></a> [databricks\_data\_landing\_zones](#input\_databricks\_data\_landing\_zones)
 
-Description: Azure Databricks data landing zones that use existing OneLake items as the shared analytical data layer. customer\_managed\_key.dbfs\_root\_key\_role\_assignment.key\_vault\_resource\_id names the Azure RBAC vault that hosts dbfs\_root\_key\_vault\_key\_id; the zone then grants the workspace storage identity Key Vault Crypto Service Encryption User on that key between workspace preparation and key binding, so one apply creates an encrypted workspace (the deploying identity needs Microsoft.Authorization/roleAssignments/write on the key). Legacy managed\_disk\_key\_vault\_resource\_id and managed\_services\_key\_vault\_resource\_id hints are retained only to reject them explicitly; encryption keys are selected by key URLs, not these ARM IDs.
+Description: Azure Databricks data landing zones that use existing OneLake items as the shared analytical data layer. Each zone's telemetry is enabled by default and can be disabled individually; the module-level enable\_telemetry opt-out disables telemetry for every zone. customer\_managed\_key.dbfs\_root\_key\_role\_assignment.key\_vault\_resource\_id names the Azure RBAC vault that hosts dbfs\_root\_key\_vault\_key\_id; the zone then grants the workspace storage identity Key Vault Crypto Service Encryption User on that key between workspace preparation and key binding, so one apply creates an encrypted workspace (the deploying identity needs Microsoft.Authorization/roleAssignments/write on the key). Legacy managed\_disk\_key\_vault\_resource\_id and managed\_services\_key\_vault\_resource\_id hints are retained only to reject them explicitly; encryption keys are selected by key URLs, not these ARM IDs.
 
 Type:
 
@@ -327,6 +328,7 @@ map(object({
       managed_services_key_vault_resource_id          = optional(string)
     }))
     default_storage_firewall_enabled  = optional(bool, true)
+    enable_telemetry                  = optional(bool, true)
     infrastructure_encryption_enabled = optional(bool, true)
     location                          = string
     lock = optional(object({
