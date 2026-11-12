@@ -3,7 +3,13 @@
 # module intentionally does not declare providers it never uses directly (TFNFR26).
 # Without the mapping, providers needed only by composed dependencies can fall back
 # to real providers instead of mocks.
-mock_provider "azapi" {}
+mock_provider "azapi" {
+  mock_data "azapi_client_config" {
+    defaults = {
+      subscription_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000"
+    }
+  }
+}
 mock_provider "fabric" {}
 mock_provider "modtm" {}
 mock_provider "random" {}
@@ -34,9 +40,16 @@ run "fabric_capacity_and_onelake_composition" {
         capacity_administration_members = ["fabric-admin@example.com"]
         capacity_name                   = "fctest"
         capacity_sku_name               = "F2"
-        enable_telemetry                = false
         location                        = "westeurope"
         resource_group_name             = "rg-fabric-test"
+      }
+      telemetry_disabled = {
+        capacity_administration_members = ["fabric-admin@example.com"]
+        capacity_name                   = "fctestdisabled"
+        capacity_sku_name               = "F2"
+        enable_telemetry                = false
+        location                        = "westeurope"
+        resource_group_name             = "rg-fabric-test-disabled"
       }
     }
     fabric_data_landing_zones = {
@@ -61,6 +74,11 @@ run "fabric_capacity_and_onelake_composition" {
   }
 
   assert {
+    condition     = local.data_management_landing_zone_telemetry == { shared = true, telemetry_disabled = false }
+    error_message = "Per-zone telemetry opt-out must coexist with the default-enabled zone."
+  }
+
+  assert {
     condition     = contains(keys(output.workspace_onelake_endpoints), "platform")
     error_message = "The root must expose OneLake endpoints for each Fabric data landing zone."
   }
@@ -71,7 +89,7 @@ run "fabric_capacity_and_onelake_composition" {
   }
 
   assert {
-    condition     = length(modtm_telemetry.telemetry) == 1
+    condition     = length(azapi_resource.telemetry) == 1
     error_message = "Root pattern telemetry must be created when enable_telemetry is true."
   }
 
@@ -121,8 +139,13 @@ run "global_telemetry_opt_out_with_child_defaults" {
   }
 
   assert {
-    condition     = length(modtm_telemetry.telemetry) == 0
-    error_message = "Global telemetry opt-out must disable root telemetry while child telemetry flags retain their true defaults."
+    condition     = length(azapi_resource.telemetry) == 0
+    error_message = "Global telemetry opt-out must disable root telemetry."
+  }
+
+  assert {
+    condition     = local.data_management_landing_zone_telemetry["shared"] == false
+    error_message = "Global telemetry opt-out must override the default-enabled child setting."
   }
 }
 
@@ -145,7 +168,6 @@ run "rejects_missing_capacity_key" {
         capacity_administration_members = ["fabric-admin@example.com"]
         capacity_name                   = "fctest"
         capacity_sku_name               = "F2"
-        enable_telemetry                = false
         location                        = "westeurope"
         resource_group_name             = "rg-fabric-test"
       }
@@ -169,7 +191,7 @@ run "rejects_missing_capacity_key" {
   expect_failures = [var.fabric_data_landing_zones]
 
   assert {
-    condition     = length(modtm_telemetry.telemetry) == 0
+    condition     = length(azapi_resource.telemetry) == 0
     error_message = "Root pattern telemetry must support explicit opt-out."
   }
 }
@@ -243,7 +265,7 @@ run "databricks_dbfs_key_grant_plans_through_the_root" {
   }
 
   variables {
-    enable_telemetry = false
+    enable_telemetry = true
     tenant_id        = uuidv5("dns", "tenant.example")
     data_management_landing_zones = {
       shared = {
@@ -270,6 +292,7 @@ run "databricks_dbfs_key_grant_plans_through_the_root" {
     databricks_data_landing_zones = {
       platform = {
         access_connector_name                                = "ac-test"
+        enable_telemetry                                     = false
         location                                             = "westeurope"
         managed_resource_group_name                          = "rg-dbw-managed-test"
         private_subnet_name                                  = "private"
@@ -294,6 +317,11 @@ run "databricks_dbfs_key_grant_plans_through_the_root" {
   assert {
     condition     = contains(keys(output.databricks_data_landing_zones), "platform")
     error_message = "A Databricks zone that asks the module to grant root DBFS key access must plan through the root without a dependency cycle."
+  }
+
+  assert {
+    condition     = local.databricks_data_landing_zone_telemetry["platform"] == false
+    error_message = "A Databricks zone's telemetry opt-out must be preserved while root telemetry remains enabled."
   }
 }
 

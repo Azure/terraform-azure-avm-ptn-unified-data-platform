@@ -8,7 +8,7 @@ module "data_management_landing_zone" {
   location                        = each.value.location
   resource_group_name             = each.value.resource_group_name
   capacity_role_assignments       = each.value.capacity_role_assignments
-  enable_telemetry                = var.enable_telemetry && each.value.enable_telemetry
+  enable_telemetry                = local.data_management_landing_zone_telemetry[each.key]
   lock                            = each.value.lock
   resource_group_resource_id      = each.value.resource_group_resource_id
   tags                            = merge(coalesce(var.tags, {}), each.value.tags)
@@ -81,7 +81,7 @@ module "databricks_data_landing_zone" {
   databricks_customer_managed_keys                     = each.value.customer_managed_key
   default_storage_firewall_enabled                     = each.value.default_storage_firewall_enabled
   diagnostic_settings                                  = each.value.diagnostic_settings
-  enable_telemetry                                     = var.enable_telemetry && each.value.enable_telemetry
+  enable_telemetry                                     = local.databricks_data_landing_zone_telemetry[each.key]
   infrastructure_encryption_enabled                    = each.value.infrastructure_encryption_enabled
   lock                                                 = each.value.lock
   network_security_group_rules_required                = each.value.network_security_group_rules_required

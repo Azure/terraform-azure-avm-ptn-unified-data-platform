@@ -1,6 +1,12 @@
-mock_provider "azapi" {}
+mock_provider "azapi" {
+  mock_data "azapi_client_config" {
+    defaults = {
+      subscription_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000"
+    }
+  }
+}
+
 mock_provider "fabric" {}
-mock_provider "modtm" {}
 
 variables {
   location = "westeurope"
@@ -10,7 +16,7 @@ run "workspace_network_controls_are_opt_in" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -53,7 +59,7 @@ run "enabled_workspace_networks_fail_closed" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -92,7 +98,7 @@ run "git_deny_override_is_supported" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -122,7 +128,7 @@ run "outbound_allowlists_require_network_restrictions" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -150,7 +156,7 @@ run "lockdown_requires_private_link" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -177,7 +183,7 @@ run "verified_private_link_enables_lockdown" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -215,7 +221,7 @@ run "customer_managed_key_requires_preview_opt_in" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -243,7 +249,7 @@ run "customer_managed_key_creates_workspace_encryption_when_opted_in" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -284,7 +290,7 @@ run "composite_keys_do_not_collide_across_ambiguous_boundaries" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -361,11 +367,12 @@ run "composite_keys_do_not_collide_across_ambiguous_boundaries" {
     error_message = "The 'sales' workspace's 'west-reader' role assignment must resolve to the 'sales' entry, not the 'sales-west' workspace's 'reader' entry."
   }
 }
+
 run "private_link_service_uses_requested_resource_group" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan
@@ -424,7 +431,7 @@ run "rejects_distinct_legacy_private_link_tags" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
   variables {
     default_capacity_id = uuidv5("dns", "capacity.example")
@@ -455,7 +462,7 @@ run "cross_subscription_private_link_targets_preserve_full_ids" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
+
   }
 
   command = plan

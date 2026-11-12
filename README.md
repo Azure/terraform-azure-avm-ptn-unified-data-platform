@@ -156,12 +156,11 @@ The following requirements are needed by this module:
 
 The following resources are used by this module:
 
-- [modtm_telemetry.telemetry](https://registry.terraform.io/providers/Azure/modtm/latest/docs/resources/telemetry) (resource)
-- [random_uuid.telemetry](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
+- [azapi_resource.telemetry](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
+- [terraform_data.telemetry](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) (resource)
 - [time_sleep.wait_for_capacity_activation](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) (resource)
 - [azapi_client_config.telemetry](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/client_config) (data source)
 - [fabric_capacity.this](https://registry.terraform.io/providers/microsoft/fabric/latest/docs/data-sources/capacity) (data source)
-- [modtm_module_source.telemetry](https://registry.terraform.io/providers/Azure/modtm/latest/docs/data-sources/module_source) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -170,7 +169,7 @@ The following input variables are required:
 
 ### <a name="input_data_management_landing_zones"></a> [data\_management\_landing\_zones](#input\_data\_management\_landing\_zones)
 
-Description: Azure data management landing zones and Fabric capacities. Capacity administrators must be Entra user UPNs or service-principal object IDs.
+Description: Azure data management landing zones and Fabric capacities. Each zone's telemetry is enabled by default and can be disabled individually; the module-level enable\_telemetry opt-out disables telemetry for every zone. Capacity administrators must be Entra user UPNs or service-principal object IDs.
 
 Type:
 
@@ -295,7 +294,7 @@ Default: `"30s"`
 
 ### <a name="input_databricks_data_landing_zones"></a> [databricks\_data\_landing\_zones](#input\_databricks\_data\_landing\_zones)
 
-Description: Azure Databricks data landing zones that use existing OneLake items as the shared analytical data layer. customer\_managed\_key.dbfs\_root\_key\_role\_assignment.key\_vault\_resource\_id names the Azure RBAC vault that hosts dbfs\_root\_key\_vault\_key\_id; the zone then grants the workspace storage identity Key Vault Crypto Service Encryption User on that key between workspace preparation and key binding, so one apply creates an encrypted workspace (the deploying identity needs Microsoft.Authorization/roleAssignments/write on the key). Legacy managed\_disk\_key\_vault\_resource\_id and managed\_services\_key\_vault\_resource\_id hints are retained only to reject them explicitly; encryption keys are selected by key URLs, not these ARM IDs.
+Description: Azure Databricks data landing zones that use existing OneLake items as the shared analytical data layer. Each zone's telemetry is enabled by default and can be disabled individually; the module-level enable\_telemetry opt-out disables telemetry for every zone. customer\_managed\_key.dbfs\_root\_key\_role\_assignment.key\_vault\_resource\_id names the Azure RBAC vault that hosts dbfs\_root\_key\_vault\_key\_id; the zone then grants the workspace storage identity Key Vault Crypto Service Encryption User on that key between workspace preparation and key binding, so one apply creates an encrypted workspace (the deploying identity needs Microsoft.Authorization/roleAssignments/write on the key). Legacy managed\_disk\_key\_vault\_resource\_id and managed\_services\_key\_vault\_resource\_id hints are retained only to reject them explicitly; encryption keys are selected by key URLs, not these ARM IDs.
 
 Type:
 

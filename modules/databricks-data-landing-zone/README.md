@@ -22,10 +22,12 @@ The following resources are used by this module:
 - [azapi_resource.dbfs_root_key_role_assignment](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
 - [azapi_resource.diagnostic_settings](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
 - [azapi_resource.lock](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
+- [azapi_resource.telemetry](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
 - [azapi_resource.this](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/resource) (resource)
 - [azapi_update_resource.dbfs_root_key](https://registry.terraform.io/providers/azure/azapi/latest/docs/resources/update_resource) (resource)
-- [modtm_telemetry.this](https://registry.terraform.io/providers/Azure/modtm/latest/docs/resources/telemetry) (resource)
 - [terraform_data.dbfs_root_key_grant_revision](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) (resource)
+- [terraform_data.telemetry](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) (resource)
+- [azapi_client_config.telemetry](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/client_config) (data source)
 - [azapi_resource_list.diagnostic_categories](https://registry.terraform.io/providers/azure/azapi/latest/docs/data-sources/resource_list) (data source)
 
 <!-- markdownlint-disable MD013 -->
@@ -211,7 +213,9 @@ Default: `{}`
 
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
-Description: Controls whether anonymous module usage telemetry is enabled. No customer data or deployment values are collected.
+Description: This variable controls whether or not telemetry is enabled for the module.  
+For more information see <https://aka.ms/avm/telemetryinfo>.  
+If it is set to false, then no telemetry will be collected.
 
 Type: `bool`
 
@@ -430,7 +434,7 @@ Version: 0.2.0
 
 Source: Azure/avm-utl-interfaces/azure
 
-Version: 0.7.0
+Version: 0.9.0
 
 ### <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group)
 

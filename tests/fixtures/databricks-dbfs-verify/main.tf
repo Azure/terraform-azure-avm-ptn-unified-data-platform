@@ -11,12 +11,6 @@ terraform {
   }
 }
 
-variable "workspace_id" {
-  type        = string
-  description = "Resource ID of the Azure Databricks workspace under test."
-  nullable    = false
-}
-
 data "azapi_resource" "workspace" {
   resource_id            = var.workspace_id
   type                   = "Microsoft.Databricks/workspaces@2026-01-01"

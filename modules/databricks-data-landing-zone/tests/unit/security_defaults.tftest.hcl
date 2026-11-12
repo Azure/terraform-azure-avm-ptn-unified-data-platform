@@ -1,8 +1,9 @@
 mock_provider "azapi" {
   mock_data "azapi_client_config" {
     defaults = {
-      subscription_id = "00000000-0000-0000-0000-000000000001"
-      tenant_id       = "00000000-0000-0000-0000-000000000002"
+      subscription_id          = "00000000-0000-0000-0000-000000000001"
+      tenant_id                = "00000000-0000-0000-0000-000000000002"
+      subscription_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000001"
     }
   }
   mock_data "azapi_resource_list" {
@@ -13,7 +14,9 @@ mock_provider "azapi" {
     }
   }
 }
+
 mock_provider "modtm" {}
+
 mock_provider "random" {}
 
 override_resource {
@@ -39,12 +42,14 @@ override_resource {
     }
   }
 }
+
 override_resource {
   target = module.resource_group[0].azapi_resource.this
   values = {
     id = "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/rg-databricks-test"
   }
 }
+
 override_resource {
   target = module.access_connector.azapi_resource.this
   values = {
@@ -137,12 +142,24 @@ run "secure_workspace_foundation" {
     condition     = output.onelake_targets["curated"].abfs_uri == "abfss://${uuidv5("dns", "workspace.example")}@test-region-onelake.dfs.fabric.microsoft.com/${uuidv5("dns", "item.example")}/Tables"
     error_message = "OneLake metadata must preserve canonical caller-selected ABFS URIs."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "onelake_requires_premium" {
   command = plan
-  variables { sku = "standard" }
+  variables {
+    sku = "standard"
+  }
   expect_failures = [var.sku]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "configurable_security_and_existing_resource_group" {
@@ -172,9 +189,14 @@ run "configurable_security_and_existing_resource_group" {
       azapi_resource.lock[0].body.properties.notes == "Protected workspace" &&
       azapi_resource.lock[0].name == "lock-CanNotDelete" &&
       azapi_resource.lock[0].parent_id == azapi_resource.this.id &&
-      length(modtm_telemetry.this) == 0
+      length(azapi_resource.telemetry) == 0
     )
     error_message = "Workspace locks must use actual ARM properties and telemetry must stay off."
+  }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
   }
 }
 
@@ -226,6 +248,11 @@ run "customer_managed_keys" {
     )
     error_message = "Without dbfs_root_key_role_assignment the module must not grant Key Vault access or add a retry default."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "dbfs_key_grant_precedes_binding" {
@@ -260,6 +287,11 @@ run "dbfs_key_grant_precedes_binding" {
     )
     error_message = "With a module-managed grant the binding must track the grant and retry Key Vault authorization failures while RBAC propagates."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "caller_retry_replaces_dbfs_grant_retry_default" {
@@ -282,6 +314,11 @@ run "caller_retry_replaces_dbfs_grant_retry_default" {
     )
     error_message = "A caller-supplied retry must replace the module's DBFS binding retry default (TFFR7)."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "dbfs_grant_requires_dbfs_key" {
@@ -295,6 +332,11 @@ run "dbfs_grant_requires_dbfs_key" {
     }
   }
   expect_failures = [var.databricks_customer_managed_keys]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "dbfs_grant_rejects_invalid_vault_id" {
@@ -308,6 +350,11 @@ run "dbfs_grant_rejects_invalid_vault_id" {
     }
   }
   expect_failures = [var.databricks_customer_managed_keys]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "dbfs_grant_rejects_vault_that_does_not_host_the_key" {
@@ -321,6 +368,11 @@ run "dbfs_grant_rejects_vault_that_does_not_host_the_key" {
     }
   }
   expect_failures = [var.databricks_customer_managed_keys]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 # The same state is reused: removing the key updates the binding rather than deleting it.
@@ -333,6 +385,11 @@ run "removing_dbfs_key_reverts_to_default" {
       azapi_update_resource.dbfs_root_key.body.properties.parameters.encryption.value.keyvaulturi == null
     )
     error_message = "Removing DBFS CMK must send Default and clear the key fields."
+  }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
   }
 }
 
@@ -360,6 +417,11 @@ run "diagnostic_settings_forward_metrics_destination_type_and_enabled_flags" {
     )
     error_message = "Dedicated, destination, categories and every enabled flag must reach ARM unchanged."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "diagnostic_settings_preserve_marketplace_destination" {
@@ -383,6 +445,11 @@ run "diagnostic_settings_preserve_marketplace_destination" {
       azapi_resource.diagnostic_settings["partner"].name == "diag-dbw-test-${sha256("partner")}"
     )
     error_message = "Marketplace/log groups must survive and AzureDiagnostics must become ARM null at the boundary."
+  }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
   }
 }
 
@@ -414,6 +481,11 @@ run "diagnostic_settings_include_response_added_disabled_categories" {
     )
     error_message = "Compare complete lists by category identity without ignoring extra items, and send empty metrics as an empty list."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "diagnostic_settings_track_log_changes_and_removed_categories" {
@@ -433,6 +505,11 @@ run "diagnostic_settings_track_log_changes_and_removed_categories" {
       length([for log in azapi_resource.diagnostic_settings["audit"].body.properties.logs : log if log.category == "accounts" && !log.enabled]) == 1
     )
     error_message = "Adding, disabling or removing a configured category must change its enabled flag in the complete ARM list."
+  }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
   }
 }
 
@@ -460,6 +537,11 @@ run "diagnostic_settings_normalize_omitted_null_and_empty_metrics" {
     condition     = alltrue([for setting in azapi_resource.diagnostic_settings : length(setting.body.properties.metrics) == 0])
     error_message = "Omitted, null and empty metric selections must all produce an empty ARM list rather than null."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "metric_only_diagnostics_disable_individual_logs" {
@@ -479,6 +561,11 @@ run "metric_only_diagnostics_disable_individual_logs" {
       azapi_resource.diagnostic_settings["metrics"].body.properties.metrics[0].enabled
     )
     error_message = "A metrics-only setting must disable all individual log categories while preserving the requested metric."
+  }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
   }
 }
 
@@ -505,6 +592,11 @@ run "two_unnamed_diagnostics_are_distinct" {
     )
     error_message = "Unnamed diagnostic settings must have stable map-key-derived distinct names."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "duplicate_explicit_names_are_rejected" {
@@ -524,6 +616,11 @@ run "duplicate_explicit_names_are_rejected" {
     }
   }
   expect_failures = [var.diagnostic_settings]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "explicit_generated_name_collision_is_rejected" {
@@ -542,6 +639,11 @@ run "explicit_generated_name_collision_is_rejected" {
     }
   }
   expect_failures = [var.diagnostic_settings]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "empty_diagnostic_name_is_rejected" {
@@ -556,6 +658,11 @@ run "empty_diagnostic_name_is_rejected" {
     }
   }
   expect_failures = [var.diagnostic_settings]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "rejects_diagnostic_retention" {
@@ -569,6 +676,11 @@ run "rejects_diagnostic_retention" {
     }
   }
   expect_failures = [var.diagnostic_settings]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "rejects_malformed_onelake_target" {
@@ -584,6 +696,11 @@ run "rejects_malformed_onelake_target" {
     }
   }
   expect_failures = [var.onelake_targets]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "rejects_versionless_managed_disk_key" {
@@ -594,6 +711,11 @@ run "rejects_versionless_managed_disk_key" {
     }
   }
   expect_failures = [var.databricks_customer_managed_keys]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "rejects_versionless_managed_services_key" {
@@ -604,6 +726,11 @@ run "rejects_versionless_managed_services_key" {
     }
   }
   expect_failures = [var.databricks_customer_managed_keys]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "accepts_versionless_dbfs_root_key" {
@@ -621,6 +748,11 @@ run "accepts_versionless_dbfs_root_key" {
     )
     error_message = "Versionless DBFS keys must use the API's empty key version."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "rejects_legacy_managed_disk_vault_id" {
@@ -632,6 +764,11 @@ run "rejects_legacy_managed_disk_vault_id" {
     }
   }
   expect_failures = [var.databricks_customer_managed_keys]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "rejects_legacy_managed_services_vault_id" {
@@ -643,6 +780,11 @@ run "rejects_legacy_managed_services_vault_id" {
     }
   }
   expect_failures = [var.databricks_customer_managed_keys]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "cross_subscription_resource_group_targets_both_resources" {
@@ -658,6 +800,11 @@ run "cross_subscription_resource_group_targets_both_resources" {
     )
     error_message = "Workspace, Access Connector parent and managed RG must consistently retain the targeted subscription."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "infrastructure_encryption_false_preserves_legacy_body" {
@@ -671,6 +818,11 @@ run "infrastructure_encryption_false_preserves_legacy_body" {
       !azapi_resource.this.replace_triggers_external_values.infrastructure_encryption_enabled
     )
     error_message = "False must retain the legacy omitted ARM parameter without an artificial migration replacement."
+  }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
   }
 }
 
@@ -695,6 +847,11 @@ run "azure_diagnostics_log_analytics_destination_is_null" {
     )
     error_message = "AzureDiagnostics must become ARM null without resetting Dedicated or changing logs/metrics."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "empty_and_long_map_keys_generate_valid_names" {
@@ -718,6 +875,11 @@ run "empty_and_long_map_keys_generate_valid_names" {
     )
     error_message = "Empty, long and unsafe map keys must produce bounded, legal and distinct hashed names."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "oversized_explicit_diagnostic_name_is_rejected" {
@@ -732,6 +894,11 @@ run "oversized_explicit_diagnostic_name_is_rejected" {
     }
   }
   expect_failures = [var.diagnostic_settings]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "readonly_lock_preserves_custom_name" {
@@ -747,6 +914,11 @@ run "readonly_lock_preserves_custom_name" {
     )
     error_message = "ReadOnly locks must preserve their custom names and default notes in ARM."
   }
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }
 
 run "rejects_unrelated_subnet_association" {
@@ -755,4 +927,9 @@ run "rejects_unrelated_subnet_association" {
     private_subnet_network_security_group_association_id = "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-other/subnets/snet-other"
   }
   expect_failures = [azapi_resource.this]
+  providers = {
+    azapi  = azapi
+    modtm  = modtm
+    random = random
+  }
 }

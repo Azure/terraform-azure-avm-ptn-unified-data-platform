@@ -23,7 +23,7 @@ variable "data_management_landing_zones" {
     resource_group_resource_id = optional(string)
     tags                       = optional(map(string), {})
   }))
-  description = "Azure data management landing zones and Fabric capacities. Capacity administrators must be Entra user UPNs or service-principal object IDs."
+  description = "Azure data management landing zones and Fabric capacities. Each zone's telemetry is enabled by default and can be disabled individually; the module-level enable_telemetry opt-out disables telemetry for every zone. Capacity administrators must be Entra user UPNs or service-principal object IDs."
   nullable    = false
 
   validation {
@@ -260,7 +260,7 @@ variable "databricks_data_landing_zones" {
     })), {})
   }))
   default     = {}
-  description = "Azure Databricks data landing zones that use existing OneLake items as the shared analytical data layer. customer_managed_key.dbfs_root_key_role_assignment.key_vault_resource_id names the Azure RBAC vault that hosts dbfs_root_key_vault_key_id; the zone then grants the workspace storage identity Key Vault Crypto Service Encryption User on that key between workspace preparation and key binding, so one apply creates an encrypted workspace (the deploying identity needs Microsoft.Authorization/roleAssignments/write on the key). Legacy managed_disk_key_vault_resource_id and managed_services_key_vault_resource_id hints are retained only to reject them explicitly; encryption keys are selected by key URLs, not these ARM IDs."
+  description = "Azure Databricks data landing zones that use existing OneLake items as the shared analytical data layer. Each zone's telemetry is enabled by default and can be disabled individually; the module-level enable_telemetry opt-out disables telemetry for every zone. customer_managed_key.dbfs_root_key_role_assignment.key_vault_resource_id names the Azure RBAC vault that hosts dbfs_root_key_vault_key_id; the zone then grants the workspace storage identity Key Vault Crypto Service Encryption User on that key between workspace preparation and key binding, so one apply creates an encrypted workspace (the deploying identity needs Microsoft.Authorization/roleAssignments/write on the key). Legacy managed_disk_key_vault_resource_id and managed_services_key_vault_resource_id hints are retained only to reject them explicitly; encryption keys are selected by key URLs, not these ARM IDs."
   nullable    = false
 
   validation {
