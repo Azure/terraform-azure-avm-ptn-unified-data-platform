@@ -1,6 +1,6 @@
 module "resource_group" {
   source  = "Azure/avm-res-resources-resourcegroup/azurerm"
-  version = "0.4.0"
+  version = "0.5.0"
   count   = var.resource_group_resource_id == null ? 1 : 0
 
   location         = var.location
@@ -11,7 +11,7 @@ module "resource_group" {
 
 module "capacity" {
   source  = "Azure/avm-res-fabric-capacity/azure"
-  version = "0.2.0"
+  version = "0.2.1"
 
   administration_members = var.capacity_administration_members
   location               = var.location
