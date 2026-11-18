@@ -428,19 +428,19 @@ The following Modules are called:
 
 Source: Azure/avm-res-databricks-accessconnector/azurerm
 
-Version: 0.2.0
+Version: 0.2.1
 
 ### <a name="module_diagnostic_settings_interface"></a> [diagnostic\_settings\_interface](#module\_diagnostic\_settings\_interface)
 
 Source: Azure/avm-utl-interfaces/azure
 
-Version: 0.9.0
+Version: 0.10.0
 
 ### <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group)
 
 Source: Azure/avm-res-resources-resourcegroup/azurerm
 
-Version: 0.4.0
+Version: 0.5.0
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection
