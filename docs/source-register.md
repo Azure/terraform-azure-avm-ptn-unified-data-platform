@@ -1,6 +1,6 @@
 # Source Register
 
-The sources directly affected by the review fixes below were rechecked on 2026-09-30. Older rows retain their original observation dates rather than implying that unrelated product guidance was refreshed.
+Source review dates are listed below; older rows retain their original observation dates.
 
 | Source | Version/date observed | Design use |
 | --- | --- | --- |
@@ -11,10 +11,10 @@ The sources directly affected by the review fixes below were rechecked on 2026-0
 | Fabric tenant setting Terraform resource and REST API | v1.14.0, generally available since provider v1.8.0, reviewed 2026-10-01 | Declarative tenant settings, security-group scope, delegation, typed properties, deletion behavior, and permissions; kept out of module scope as a tenant-wide prerequisite |
 | Fabric capacity ARM schema | `Microsoft.Fabric/capacities@2023-11-01`, reviewed 2026-07-23 | Stable AzAPI capacity contract and administrator identity semantics |
 | Databricks Access Connector ARM schema | `Microsoft.Databricks/accessConnectors@2024-05-01`, reviewed 2026-07-23 | Stable AzAPI Access Connector contract and system-assigned identity output |
-| AVM resource group, Access Connector, capacity, and utility interfaces | v0.4.0 / v0.1.0 / v0.1.0 / v0.7.0, reviewed 2026-09-30 | Retained published AzAPI-based dependencies; workspace and private endpoints are owned directly to remove AzureRM requirements |
+| AVM resource group, Access Connector, capacity, and utility interfaces | v0.5.0 / v0.3.0 / v0.3.0 / v0.9.0 and v0.10.0, reviewed 2026-11-18 | Retained published AzAPI-based dependencies; workspace and private endpoints are owned directly to remove AzureRM requirements |
 | Microsoft.Network private endpoint and DNS zone group schemas | 2024-05-01, reviewed 2026-09-30 | Full parent-ID targeting, connection settings, shared DNS-zone binding, and replacement semantics |
 | Azure Monitor diagnostic settings REST API | 2021-05-01-preview, reviewed 2026-09-30 | Unique setting names and Dedicated/null destination type translation |
-| AVM SFR3 and SFR4 / Avm.Authoring | SFR3 updated 2026-09-29; released authoring0.19.0, reviewed 2026-09-30 | Reporting location wiring and documented unreleased telemetry generator rollout (tools PR192) |
+| AVM SFR3 and SFR4 / Avm.Authoring | Authoring 1.2.0, reviewed 2026-11-18 | Subscription-scope deployment telemetry and opt-out |
 | Workspace outbound access protection | Updated 2026-07-15 | Optional workspace protection; deny-by-default outbound/cloud/gateway behavior when enabled; Git policy is independently configurable |
 | Workspace-level private links | Updated 2026-05-27 | Inbound private-link design and DNS/resource sequence |
 | Fabric security overview | Updated 2026-07-14 | Identity, network, encryption, and data-security controls |

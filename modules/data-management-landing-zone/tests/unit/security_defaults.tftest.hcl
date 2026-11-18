@@ -11,13 +11,11 @@ mock_provider "azapi" {
     }
   }
 }
-mock_provider "modtm" {}
 mock_provider "random" {}
 
 run "composes_capacity" {
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 
@@ -40,7 +38,6 @@ run "composes_capacity" {
 run "existing_resource_group_and_lock" {
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 
@@ -71,7 +68,6 @@ run "existing_resource_group_and_lock" {
 run "rejects_invalid_capacity_name" {
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 
@@ -92,7 +88,6 @@ run "rejects_invalid_capacity_name" {
 run "rejects_invalid_capacity_sku" {
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 

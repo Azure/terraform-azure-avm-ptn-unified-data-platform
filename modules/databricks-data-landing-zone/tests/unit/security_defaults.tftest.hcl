@@ -15,7 +15,6 @@ mock_provider "azapi" {
   }
 }
 
-mock_provider "modtm" {}
 
 mock_provider "random" {}
 
@@ -144,7 +143,6 @@ run "secure_workspace_foundation" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -157,7 +155,6 @@ run "onelake_requires_premium" {
   expect_failures = [var.sku]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -195,7 +192,6 @@ run "configurable_security_and_existing_resource_group" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -250,7 +246,6 @@ run "customer_managed_keys" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -289,7 +284,6 @@ run "dbfs_key_grant_precedes_binding" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -316,7 +310,6 @@ run "caller_retry_replaces_dbfs_grant_retry_default" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -334,7 +327,6 @@ run "dbfs_grant_requires_dbfs_key" {
   expect_failures = [var.databricks_customer_managed_keys]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -352,7 +344,6 @@ run "dbfs_grant_rejects_invalid_vault_id" {
   expect_failures = [var.databricks_customer_managed_keys]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -370,7 +361,6 @@ run "dbfs_grant_rejects_vault_that_does_not_host_the_key" {
   expect_failures = [var.databricks_customer_managed_keys]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -388,7 +378,6 @@ run "removing_dbfs_key_reverts_to_default" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -419,7 +408,6 @@ run "diagnostic_settings_forward_metrics_destination_type_and_enabled_flags" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -448,7 +436,6 @@ run "diagnostic_settings_preserve_marketplace_destination" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -483,7 +470,6 @@ run "diagnostic_settings_include_response_added_disabled_categories" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -508,7 +494,6 @@ run "diagnostic_settings_track_log_changes_and_removed_categories" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -539,7 +524,6 @@ run "diagnostic_settings_normalize_omitted_null_and_empty_metrics" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -564,7 +548,6 @@ run "metric_only_diagnostics_disable_individual_logs" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -594,7 +577,6 @@ run "two_unnamed_diagnostics_are_distinct" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -618,7 +600,6 @@ run "duplicate_explicit_names_are_rejected" {
   expect_failures = [var.diagnostic_settings]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -641,7 +622,6 @@ run "explicit_generated_name_collision_is_rejected" {
   expect_failures = [var.diagnostic_settings]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -660,7 +640,6 @@ run "empty_diagnostic_name_is_rejected" {
   expect_failures = [var.diagnostic_settings]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -678,7 +657,6 @@ run "rejects_diagnostic_retention" {
   expect_failures = [var.diagnostic_settings]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -698,7 +676,6 @@ run "rejects_malformed_onelake_target" {
   expect_failures = [var.onelake_targets]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -713,7 +690,6 @@ run "rejects_versionless_managed_disk_key" {
   expect_failures = [var.databricks_customer_managed_keys]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -728,7 +704,6 @@ run "rejects_versionless_managed_services_key" {
   expect_failures = [var.databricks_customer_managed_keys]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -750,7 +725,6 @@ run "accepts_versionless_dbfs_root_key" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -766,7 +740,6 @@ run "rejects_legacy_managed_disk_vault_id" {
   expect_failures = [var.databricks_customer_managed_keys]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -782,7 +755,6 @@ run "rejects_legacy_managed_services_vault_id" {
   expect_failures = [var.databricks_customer_managed_keys]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -802,7 +774,6 @@ run "cross_subscription_resource_group_targets_both_resources" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -821,7 +792,6 @@ run "infrastructure_encryption_false_preserves_legacy_body" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -849,7 +819,6 @@ run "azure_diagnostics_log_analytics_destination_is_null" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -877,7 +846,6 @@ run "empty_and_long_map_keys_generate_valid_names" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -896,7 +864,6 @@ run "oversized_explicit_diagnostic_name_is_rejected" {
   expect_failures = [var.diagnostic_settings]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -916,7 +883,6 @@ run "readonly_lock_preserves_custom_name" {
   }
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }
@@ -929,7 +895,6 @@ run "rejects_unrelated_subnet_association" {
   expect_failures = [azapi_resource.this]
   providers = {
     azapi  = azapi
-    modtm  = modtm
     random = random
   }
 }

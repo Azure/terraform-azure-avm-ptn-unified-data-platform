@@ -33,10 +33,10 @@ It intentionally does not deploy data products, Fabric workload items, Databrick
 | --- | --- |
 | Root module | Composes mandatory Fabric/OneLake landing zones with optional Azure Databricks landing zones |
 | `modules/data-management-landing-zone` | Published AVM resource group and standalone Fabric capacity |
-| `avm-res-fabric-capacity` | Published AVM resource module for `Microsoft.Fabric/capacities`. Consumed here as a pinned registry module (v0.1.0). |
+| `avm-res-fabric-capacity` | Published AVM resource module for `Microsoft.Fabric/capacities`. Consumed here as a pinned registry module (v0.3.0). |
 | `modules/fabric-data-landing-zone` | Fabric domain, workspaces, RBAC, identities, network policy, and workspace-level private link |
 | `Microsoft.Network/privateEndpoints` | Workspace private endpoints and DNS zone groups managed directly through AzAPI in the Fabric data landing zone |
-| `avm-res-databricks-accessconnector` | Published AVM resource module for `Microsoft.Databricks/accessConnectors`. Consumed here as a pinned registry module (v0.1.0). |
+| `avm-res-databricks-accessconnector` | Published AVM resource module for `Microsoft.Databricks/accessConnectors`. Consumed here as a pinned registry module (v0.3.0). |
 | `modules/databricks-data-landing-zone` | VNet-injected Databricks workspace composition, diagnostics, and OneLake contract |
 | `examples/default` | Minimum required inputs: one capacity, one business domain, one workspace |
 | `examples/secure-baseline` | Workspace-level private link with example-owned network and private DNS prerequisites |
@@ -50,12 +50,10 @@ Per [TFFR3](https://azure.github.io/Azure-Verified-Modules/spec/TFFR3/), every A
 
 Per [TFNFR26](https://azure.github.io/Azure-Verified-Modules/spec/TFNFR26/), each scope declares only providers it uses directly. No root, submodule, example, or test fixture declares or configures AzureRM, and there is no AzureRM lint-policy waiver. Existing Registry addresses ending in `/azurerm` are module system identifiers, not provider declarations; the retained resource-group and Access Connector dependencies use AzAPI internally. Unit tests explicitly map any mocks required by composed dependencies.
 
-The remaining telemetry specification/tooling rollout gap is documented under [Current Gaps](#current-gaps); it is not a provider-policy exception.
-
 ## Prerequisites
 
 1. Terraform `>= 1.12, < 2.0`, including compatibility with the retained Fabric capacity dependency's short-circuiting optional-lock validation. The minimum version is covered by the unit suites and CI.
-2. AzAPI `>= 2.12, < 3.0`, Microsoft Fabric `>= 1.14, < 2.0`, modtm `~> 0.3`, random `~> 3.5`, and time `~> 0.9`. The released AVM telemetry generator still requires modtm and random pending the SFR3 rollout described below. Examples also use random for unique names.
+2. AzAPI `>= 2.12, < 3.0`, Microsoft Fabric `>= 1.14, < 2.0`, random `~> 3.5`, and time `~> 0.9`. Examples also use random for unique names.
 3. Azure permissions on every supplied full resource-group, subnet, and DNS-zone resource ID. Existing resource-group IDs retain their subscription in both the Databricks workspace/Access Connector and the Fabric private-link service/endpoint; they are not reduced to a name and retargeted to the ambient subscription. New resource groups are created in the configured AzAPI subscription.
 4. For workspace-level private link in production: an existing ALZ hierarchy, connectivity subscription, private-endpoint subnet, and shared `privatelink.fabric.microsoft.com` private DNS zone. `examples/secure-baseline` creates stand-ins for these.
 5. `Microsoft.Fabric` registered or re-registered in subscriptions that host Fabric private-link resources, and `Microsoft.Network` re-registered where workspace outbound access protection is used.
@@ -67,7 +65,7 @@ The remaining telemetry specification/tooling rollout gap is documented under [C
    - Users can access data stored in OneLake with apps external to Fabric, required for Azure Databricks to reach OneLake through the Access Connector's managed identity.
    - Use short-lived user-delegated SAS tokens and Authenticate with OneLake user-delegated SAS tokens, required only for direct ABFS read/write instead of read-only OneLake catalog federation.
 8. A nontrial Fabric F SKU in a supported region.
-9. Least-privilege deployment identities. Use OIDC or managed identity in automation. The Fabric provider reads the same `ARM_*` identity variables as AzAPI, so one identity configuration serves both providers (see [docs/e2e-testing.md](docs/e2e-testing.md)).
+9. Least-privilege deployment identities. Use OIDC or managed identity in automation. When telemetry is enabled, the identity also needs `Microsoft.Resources/deployments/read`, `Microsoft.Resources/deployments/write`, and `Microsoft.Resources/deployments/delete` at subscription scope; set `enable_telemetry = false` to opt out. The Fabric provider reads the same `ARM_*` identity variables as AzAPI, so one identity configuration serves both providers (see [docs/e2e-testing.md](docs/e2e-testing.md)).
 10. For Databricks: a caller-managed VNet with two dedicated delegated subnets and NSGs, explicit outbound connectivity, a Premium workspace SKU, and existing Fabric Lakehouse or Warehouse GUIDs.
 11. For Databricks customer-managed keys: versioned Azure Key Vault key URLs (`https://<vault>.vault.azure.net/keys/<name>/<version>`) for the managed-disk and managed-services keys, which the Databricks workspace encryption API requires; the root DBFS key accepts a versioned or versionless URL. Grant **Key Vault Crypto Service Encryption User**, or get/wrapKey/unwrapKey, to the identity each surface uses:
     - **Root DBFS:** the workspace storage account identity, which Databricks creates only when the workspace is prepared for encryption; the key must be usable before it is bound. Set `customer_managed_key.dbfs_root_key_role_assignment.key_vault_resource_id` to let the zone grant this on the key between those steps in one apply (Azure RBAC vaults; the deploying identity needs `Microsoft.Authorization/roleAssignments/write` on the key). Otherwise the first apply prepares the workspace but cannot bind the key; grant access and apply again. [docs/security.md](docs/security.md) covers existing grants, key or vault changes, and removing the grant.
@@ -96,7 +94,7 @@ terraform test -test-directory=tests/unit
 
 Run these in each `examples/*` directory. Unit suites live under `tests/unit/`; plain `terraform test` only searches `tests/` itself and would discover none. Credentialed deployment, idempotency, and cleanup testing is described in [docs/e2e-testing.md](docs/e2e-testing.md).
 
-Deployment sequencing, lockout prevention, and the state-migration requirements for deployments created from pre-release source are covered in [docs/deployment.md](docs/deployment.md). Security decisions are in [docs/security.md](docs/security.md).
+Deployment sequencing, lockout prevention, and state-migration requirements are covered in [docs/deployment.md](docs/deployment.md). Security decisions are in [docs/security.md](docs/security.md).
 
 ## Current Gaps
 
@@ -108,16 +106,10 @@ Capacity discovery through the Fabric API can also lag immediately after Azure c
 
 ### AVM publication path
 
-- The Fabric capacity dependency is published on the Terraform Registry at [`Azure/avm-res-fabric-capacity/azure` v0.1.0](https://registry.terraform.io/modules/Azure/avm-res-fabric-capacity/azure/0.1.0). This pattern module consumes it as a pinned Terraform Registry module (`azure/avm-res-fabric-capacity/azure`, version `0.1.0`).
-- The Databricks Access Connector dependency is published on the Terraform Registry at [`Azure/avm-res-databricks-accessconnector/azurerm` v0.1.0](https://registry.terraform.io/modules/Azure/avm-res-databricks-accessconnector/azurerm/0.1.0). `modules/databricks-data-landing-zone` consumes it as a pinned Terraform Registry module (`Azure/avm-res-databricks-accessconnector/azurerm`, version `0.1.0`).
+- The Fabric capacity dependency is pinned to [`Azure/avm-res-fabric-capacity/azure` v0.3.0](https://registry.terraform.io/modules/Azure/avm-res-fabric-capacity/azure/0.3.0).
+- The Databricks Access Connector dependency is pinned to [`Azure/avm-res-databricks-accessconnector/azurerm` v0.3.0](https://registry.terraform.io/modules/Azure/avm-res-databricks-accessconnector/azurerm/0.3.0).
 
-The module proposal is [Azure/Azure-Verified-Modules#2877](https://github.com/Azure/Azure-Verified-Modules/issues/2877). The root `metadata.json` holds the values assigned when the AVM repository was created. The three child `metadata.json` files still use explicitly unassigned telemetry placeholders (`46d3xtrf.ptn.unassigned-*`) and proposed `canonicalType` paths. The AVM core team must confirm or assign these values before the first release, as the [module metadata process](https://azure.github.io/Azure-Verified-Modules/contributing/module-metadata/) requires. Do not hand-pick identifiers or present these placeholders as assigned.
-
-### Telemetry tooling rollout blocker
-
-[SFR3](https://azure.github.io/Azure-Verified-Modules/spec/SFR3/) changed on 29 September 2026 to require metadata-backed subscription-scoped AzAPI deployment telemetry instead of `modtm`. The latest published `Avm.Authoring` 0.19.0 and its managed transforms still implement the older `modtm` design; the replacement generator is tracked in [AVM tools PR #192](https://github.com/Azure/azure-verified-modules-tools/pull/192). The repository retains the official released generator rather than vendoring an unmerged implementation or suppressing its checks. Passing those checks is not evidence of SFR3 compliance. Migration to the released replacement and approved metadata remains a publication blocker.
-
-The root and every Azure-deploying local child expose `location` for SFR4. The root uses this reporting region without replacing the independently configured landing-zone and private-endpoint locations. The generated telemetry implementation must be refreshed with the official supported tooling when the rollout is available.
+The module proposal is [Azure/Azure-Verified-Modules#2877](https://github.com/Azure/Azure-Verified-Modules/issues/2877). The root and each local child store their telemetry metadata in their own `metadata.json`.
 
 ### AzAPI interface limitation
 
@@ -145,8 +137,6 @@ The following requirements are needed by this module:
 - <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (>= 2.12, < 3.0)
 
 - <a name="requirement_fabric"></a> [fabric](#requirement\_fabric) (>= 1.14, < 2.0)
-
-- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.5)
 
