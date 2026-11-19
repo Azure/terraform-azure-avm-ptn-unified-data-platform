@@ -1,4 +1,4 @@
-# Default example
+# Defaults example
 
 This deploys the pattern with its minimum required inputs only: one data management landing zone with an F2 Fabric capacity and one Fabric data landing zone with a business domain and a single workspace. It runs without any input. The deploying identity becomes the capacity administrator and, as its creator, a workspace administrator.
 
