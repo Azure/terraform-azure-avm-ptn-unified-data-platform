@@ -13,8 +13,6 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (>= 2.12, < 3.0)
 
-- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
-
 ## Resources
 
 The following resources are used by this module:
@@ -149,13 +147,13 @@ The following Modules are called:
 
 Source: Azure/avm-res-fabric-capacity/azure
 
-Version: 0.2.0
+Version: 0.3.0
 
 ### <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group)
 
 Source: Azure/avm-res-resources-resourcegroup/azurerm
 
-Version: 0.4.0
+Version: 0.5.0
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection

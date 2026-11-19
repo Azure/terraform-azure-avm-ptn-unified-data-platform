@@ -75,7 +75,13 @@ Before applying to production, test the same sequence in a nonproduction workspa
 - Configure the Unity Catalog OneLake storage credential, connection, and foreign catalog through the separately governed Databricks workload layer; verify read-only federation without copying data.
 - When direct ABFS read/write is approved, test the selected OneLake endpoint and enforce one writer per table path.
 
-## 8. Upgrading State from Pre-release Source
+## 8. Upgrading Released Deployments
+
+Back up state and review the plan before upgrading. Enabled telemetry uses subscription-scope deployments and requires `Microsoft.Resources/deployments/read`, `Microsoft.Resources/deployments/write`, and `Microsoft.Resources/deployments/delete` at that scope; set `enable_telemetry = false` to opt out. Existing state may need the old ModTM and random providers for one final initialization; the old telemetry objects are forgotten without destruction.
+
+The resource-group dependency changes from v0.4.0 to v0.5.0. Review its [upgrade precautions](https://github.com/Azure/terraform-azurerm-avm-res-resources-resourcegroup/releases/tag/v0.5.0), including resource-group state moves, locks, and role assignments. A live upgrade has not been verified.
+
+## 9. Upgrading State from Pre-release Source
 
 This section applies only to deployments created from the pre-release source before the first AVM release. This version changes resource ownership to remove AzureRM runtime requirements. Do not apply a plan that destroys and recreates existing workspaces or private endpoints solely because Terraform addresses changed. Back up state securely and record the existing ARM resource IDs before upgrading.
 

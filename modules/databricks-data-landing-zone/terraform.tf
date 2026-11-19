@@ -6,10 +6,5 @@ terraform {
       source  = "azure/azapi"
       version = ">= 2.12, < 3.0"
     }
-    # tflint-ignore: terraform_unused_required_providers
-    modtm = {
-      source  = "Azure/modtm"
-      version = "~> 0.3"
-    }
   }
 }

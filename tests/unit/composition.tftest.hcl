@@ -11,7 +11,6 @@ mock_provider "azapi" {
   }
 }
 mock_provider "fabric" {}
-mock_provider "modtm" {}
 mock_provider "random" {}
 mock_provider "time" {}
 
@@ -23,7 +22,6 @@ run "fabric_capacity_and_onelake_composition" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
     random = random
     time   = time
   }
@@ -103,7 +101,6 @@ run "global_telemetry_opt_out_with_child_defaults" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
     random = random
     time   = time
   }
@@ -153,7 +150,6 @@ run "rejects_missing_capacity_key" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
     random = random
     time   = time
   }
@@ -201,7 +197,6 @@ run "rejects_legacy_vault_id_hints_at_the_root" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
     random = random
     time   = time
   }
@@ -259,7 +254,6 @@ run "databricks_dbfs_key_grant_plans_through_the_root" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
     random = random
     time   = time
   }
@@ -330,7 +324,6 @@ run "rejects_invalid_dbfs_key_grant_vault_at_the_root" {
   providers = {
     azapi  = azapi
     fabric = fabric
-    modtm  = modtm
     random = random
     time   = time
   }
