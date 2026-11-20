@@ -92,7 +92,7 @@ resource "azapi_resource" "key_vault" {
   location  = var.location
   name      = "kv-udp-${local.name_suffix}"
   parent_id = azapi_resource.resource_group.id
-  type      = "Microsoft.KeyVault/vaults@2023-07-01"
+  type      = "Microsoft.KeyVault/vaults@2026-02-01"
   body = {
     properties = {
       enablePurgeProtection   = true
@@ -121,7 +121,7 @@ resource "azapi_resource" "key_vault" {
 resource "azapi_resource_action" "dbfs_key" {
   method      = "PUT"
   resource_id = "${azapi_resource.key_vault.id}/keys/dbfs"
-  type        = "Microsoft.KeyVault/vaults/keys@2023-07-01"
+  type        = "Microsoft.KeyVault/vaults/keys@2026-02-01"
   body = {
     properties = {
       keyOps  = ["wrapKey", "unwrapKey"]
