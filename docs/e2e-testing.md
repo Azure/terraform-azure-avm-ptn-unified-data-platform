@@ -15,7 +15,7 @@ The AVM test subscription and its OIDC credentials are provided centrally; modul
 
 `avm test e2e` and the policy step of `avm pr-check` run `terraform apply`/`plan` without variable files, so every example must deploy with its defaults only. Each example therefore creates its own prerequisites with AzAPI, names every resource with a random suffix, and derives the tenant and subscription from `data.azapi_client_config`:
 
-- `examples/default` uses only the required inputs (one capacity, one business domain, one workspace).
+- `examples/defaults` uses only the required inputs (one capacity, one business domain, one workspace).
 - `examples/secure-baseline` also creates a resource group, a virtual network with a private endpoint subnet, and a `privatelink.fabric.microsoft.com` private DNS zone linked to it.
 - `examples/databricks-onelake-baseline` also creates a virtual network with two subnets delegated to `Microsoft.Databricks/workspaces`, a network security group, a NAT gateway, a Log Analytics workspace, and a Fabric Lakehouse used as the OneLake target.
 
@@ -36,7 +36,7 @@ With PowerShell 7.4 or later and an `az login` session for a disposable subscrip
 ```powershell
 Install-PSResource Avm.Authoring
 Import-Module Avm.Authoring
-avm test e2e --example default
+avm test e2e --example defaults
 ```
 
 The command runs `terraform init -upgrade`, `apply` (retrying transient capacity errors after a destroy), the idempotency `plan -detailed-exitcode`, and `destroy`. `destroy` runs whenever initialization succeeded, including after a failed apply. If `destroy` itself fails, the remaining resources must be removed manually.

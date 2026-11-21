@@ -38,7 +38,7 @@ It intentionally does not deploy data products, Fabric workload items, Databrick
 | `Microsoft.Network/privateEndpoints` | Workspace private endpoints and DNS zone groups managed directly through AzAPI in the Fabric data landing zone |
 | `avm-res-databricks-accessconnector` | Published AVM resource module for `Microsoft.Databricks/accessConnectors`. Consumed here as a pinned registry module (v0.3.0). |
 | `modules/databricks-data-landing-zone` | VNet-injected Databricks workspace composition, diagnostics, and OneLake contract |
-| `examples/default` | Minimum required inputs: one capacity, one business domain, one workspace |
+| `examples/defaults` | Minimum required inputs: one capacity, one business domain, one workspace |
 | `examples/secure-baseline` | Workspace-level private link with example-owned network and private DNS prerequisites |
 | `examples/databricks-onelake-baseline` | Unified Fabric, OneLake, and VNet-injected Azure Databricks deployment |
 
