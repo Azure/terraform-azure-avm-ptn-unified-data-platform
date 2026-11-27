@@ -432,7 +432,7 @@ Version: 0.3.0
 
 Source: Azure/avm-utl-interfaces/azure
 
-Version: 0.10.0
+Version: 0.10.1
 
 ### <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group)
 
